@@ -1,15 +1,14 @@
-<div class="login-container">
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div>
-        <label for="username">Username</label>
-        <input id="username" formControlName="username" type="text" />
-      </div>
-      <div>
-        <label for="password">Password</label>
-        <input id="password" formControlName="password" type="password" />
-      </div>
-      <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
-      <button type="submit">Login</button>
-    </form>
-  </div>
-  
+<div class="login-container d-flex justify-content-center align-items-center vh-100">
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="w-25 p-4 bg-light border rounded shadow">
+    <div class="mb-3">
+      <label for="username" class="form-label">Username</label>
+      <input id="username" formControlName="username" type="text" class="form-control" />
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label">Password</label>
+      <input id="password" formControlName="password" type="password" class="form-control" />
+    </div>
+    <div *ngIf="errorMessage" class="text-danger mb-3">{{ errorMessage }}</div>
+    <button type="submit" class="btn btn-primary w-100">Login</button>
+  </form>
+</div>

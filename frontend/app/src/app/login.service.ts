@@ -7,16 +7,32 @@ import { catchError, map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://127.0.0.1:8000/login/';
+  private loginUrl = 'http://127.0.0.1:8000/login/';
+  private signupUrl = 'http://127.0.0.1:8000/signup/';
 
   constructor(private http: HttpClient) {}
 
   login(username: string, password: string): Observable<string> {
     const body = { username, password };
-    return this.http.post<{ token: string }>(this.apiUrl, body).pipe(
+    return this.http.post<{ token: string }>(this.loginUrl, body).pipe(
       map(response => response.token),
       catchError(error => {
         return throwError(() => new Error('Login failed'));
+      })
+    );
+  }
+
+  register(username: string, email: string, password: string ): Observable<any> {
+    const body = { username, email, password};
+    return this.http.post(this.signupUrl, body).pipe(
+      catchError(error => {
+        if (error.status === 406) {
+          console.log(error.error.message);
+          return throwError(() => new Error(error.error.message));
+        }
+        else{
+          return throwError(() => new Error('Unexpected error occurred. Please try again later.'));
+        }
       })
     );
   }
