@@ -6,11 +6,6 @@ from django.db.models.signals import post_save
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 
-"""
-class User(AbstractUser):
-    bio = models.TextField(blank=True)
-    profile_pic = models.ImageField(blank=True)
-    """
 
 class Measurement(models.Model):
     id = models.AutoField(primary_key=True)

@@ -16,3 +16,20 @@ from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from ..serializers import UserSerializer
 
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+class ESPView(viewsets.ModelViewSet):
+    queryset = ESP.objects.all()
+    serializer_class = ESPSerializer
+
+    def list(self, request, *args, **kwargs):
+        user_id = request.user.id
+        queryset = self.queryset.filter(owner=user_id)
+        serializer = self.get_serializer(queryset, many=True)
+        return response.Response(serializer.data)

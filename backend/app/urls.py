@@ -6,8 +6,7 @@ from backend.app.main.views.auth_views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('measurements/', get_measurements),
     path('login/', login),
     path('signup/', signup),
-    path('esp/', ESPView.as_view({'get': 'list', 'post': 'create', 'put': 'update',}), name='esp-list-create'),
+    path('manage/', ESPView.as_view({'get': 'list'}), name='esp'),
 ]
