@@ -44,4 +44,15 @@ export class AuthService {
   isLoggedIn(): boolean {
     return !!localStorage.getItem('authToken');
   }
+
+  getToken(): string | null {
+    return localStorage.getItem('authToken');
+  }
+
+  getAuthorizationHeader() {
+    return {
+      headers: new HttpHeaders()
+        .set('Authorization',  `Token ${this.getToken()}`)
+    };
+  }
 }
