@@ -32,4 +32,16 @@ class ESPView(viewsets.ModelViewSet):
         user_id = request.user.id
         queryset = self.queryset.filter(owner=user_id)
         serializer = self.get_serializer(queryset, many=True)
-        return response.Response(serializer.data)
+        return response.Response(serializer.data, status=status.HTTP_200_OK)
+    
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+class MeasurementView(viewsets.ModelViewSet):
+    queryset = Measurement.objects.all()
+    serializer_class = MeasurementSerializer
+
+    def list(self, request, *args, **kwargs):
+        esp = request.query_params.get('esp_id')
+        queryset = self.queryset.filter(esp=esp)
+        serializer = self.get_serializer(queryset, many=True)
+        return response.Response(serializer.data, status=status.HTTP_200_OK)

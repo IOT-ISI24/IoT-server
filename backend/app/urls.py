@@ -9,4 +9,5 @@ urlpatterns = [
     path('login/', login),
     path('signup/', signup),
     path('manage/', ESPView.as_view({'get': 'list'}), name='esp'),
+    path('measurements/', MeasurementView.as_view({'get': 'list'}), name='measurements'),
 ]
