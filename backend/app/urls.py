@@ -7,6 +7,5 @@ urlpatterns = [
     path('measurements/', get_measurements),
     path('login/', login),
     path('signup/', signup),
-    path('test/', test_token),
     path('esp/', ESPView.as_view({'get': 'list', 'post': 'create', 'put': 'update',}), name='esp-list-create'),
 ]

@@ -18,6 +18,10 @@ from .serializers import UserSerializer
 
 @api_view(['POST'])
 def signup(request):
+    if User.objects.filter(username=request.data['username']).exists():
+            return Response({"message": "User with that username already exists"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+    if User.objects.filter(email=request.data['email']).exists():
+        return Response({"message":"User with that email already exists"}, status=status.HTTP_406_NOT_ACCEPTABLE)
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
@@ -26,7 +30,7 @@ def signup(request):
         user.save()
         token = Token.objects.create(user=user)
         return Response({'token': token.key, 'user': serializer.data})
-    return Response(serializer.errors, status=status.HTTP_200_OK)
+    return Response("invalid data", status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 def login(request):
@@ -37,32 +41,11 @@ def login(request):
     serializer = UserSerializer(user)
     return Response({'token': token.key, 'user': serializer.data})
 
-@api_view(['GET'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def test_token(request):
-    return Response("passed!")
-
-
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
 
-
-class UserLogIn(ObtainAuthToken):
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data,
-                                           context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        token = Token.objects.get(user=user)
-        return Response({
-            'token': token.key,
-            'id': user.pk,
-            'username': user.username
-        })
 
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
