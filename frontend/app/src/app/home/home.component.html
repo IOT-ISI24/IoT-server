@@ -1,1 +1,38 @@
-<p>home works!</p>
+<div class="container mt-4">
+    <h2 class="mb-3">Select Your ESP</h2>
+    <div class="form-group">
+      <select
+        class="form-control"
+        [(ngModel)]="selectedEsp"
+        (ngModelChange)="onEspSelect($event)"
+        [disabled]="esps.length === 0"
+      >
+        <option value="" disabled>Select ESP</option>
+        <option *ngFor="let esp of esps" [ngValue]="esp">{{ esp.name }}</option>
+      </select>
+    </div>
+  
+
+  
+    <div *ngIf="loaded && selectedEspData?.length" class="mt-4">
+        <h3>Data for {{ selectedEsp?.name }}</h3>
+        <div *ngFor="let record of selectedEspData; let i = index" class="mb-3">
+          <h5>Record {{ i + 1 }}</h5>
+          <ul class="list-group">
+            <li class="list-group-item"><strong>Temperature:</strong> {{ record.temperature }} &deg;C</li>
+            <li class="list-group-item"><strong>Humidity:</strong> {{ record.humidity }} %</li>
+            <li class="list-group-item"><strong>Pressure:</strong> {{ record.pressure }} hPa</li>
+            <li class="list-group-item"><strong>PM2.5 Concentration:</strong> {{ record.pm25_concentration }} &micro;g/m&sup3;</li>
+          </ul>
+        </div>
+      </div>
+  
+    <div *ngIf="!loaded && errorMessage" class="alert alert-danger mt-4">
+      {{ errorMessage }}
+    </div>
+
+    <div *ngIf="!loaded && !selectedEspData && !errorMessage" class="mt-4">
+      <p>Please select an ESP to see the data.</p>
+    </div>
+  </div>
+  
