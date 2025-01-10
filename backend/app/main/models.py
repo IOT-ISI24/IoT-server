@@ -22,6 +22,7 @@ class ESP(models.Model):
     mac = models.CharField(max_length=100)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     frequency = models.FloatField()
+    pm25_alarm_threshold = models.FloatField()
     is_temp_enabled = models.BooleanField()
     is_hum_enabled = models.BooleanField()
     is_press_enabled = models.BooleanField()
