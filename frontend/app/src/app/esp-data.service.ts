@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from './login.service';
-import { throwError, catchError, Observable } from 'rxjs';
+import { throwError, catchError, Observable, switchMap, interval, startWith } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -32,24 +32,37 @@ export class EspDataService {
     );
   }
 
-  getMeasurements(espId: number): Observable<any> {
-    const params = { esp_id: espId.toString() };
+  getMeasurements(espId: number, limit: number, periodic: boolean = true): Observable<any> {
+    const params = { esp_id: espId.toString(), limit: limit.toString() };
     const headers = this.authService.getAuthorizationHeader();
-    return this.http.get(this.measurementsUrl, {...headers, params}).pipe(
-      catchError(error => {
-        if (error.status === 401) {
+  
+    const fetchData = () =>
+      this.http.get(this.measurementsUrl, { ...headers, params }).pipe(
+        catchError(error => {
+          if (error.status === 401) {
+            return throwError(() => ({
+              type: 'Unauthorized',
+              message: 'You are not authorized to access this data.',
+            }));
+          }
           return throwError(() => ({
-            type: 'Unauthorized',
-            message: 'You are not authorized to access this data.',
+            type: 'GeneralError',
+            message: error.message || 'An unknown error occurred.',
           }));
-        }
-        return throwError(() => ({
-          type: 'GeneralError',
-          message: error.message || 'An unknown error occurred.',
-        }));
-      })
-    );
+        })
+      );
+  
+    if (periodic) {
+      return interval(10000).pipe(
+        startWith(0),
+        switchMap(() => fetchData()),
+        catchError(error => throwError(() => error))
+      );
+    } else {
+      return fetchData();
+    }
   }
+  
 
   
   
