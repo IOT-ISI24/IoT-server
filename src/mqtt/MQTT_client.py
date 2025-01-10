@@ -1,42 +1,44 @@
 import paho.mqtt.client as mqtt
 import json
+import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.app.settings')
+import django
+django.setup()
+from backend.app.main.signals import mqtt_payload_received
 
-BROKER_ADDRESS = "localhost" 
-BROKER_PORT = 1885 
-MQTT_USER = "user1"   
-MQTT_PASSWORD = "password"  
+
+BROKER_ADDRESS = "localhost"
+BROKER_PORT = 1885
+MQTT_USER = "user1"
+MQTT_PASSWORD = "password"
 
 USER_ID = "1"
-DEVICE_ID = "device_1"                    
+DEVICE_MAC = "24:0A:C4:00:00:00"
 
-def on_connect(client, userdata, flags, rc):
-    if rc == 0:
-        print("Połączono z brokerem MQTT")
-        topic = f"/users/{USER_ID}/devices/{DEVICE_ID}/data"
-        client.subscribe(topic)
-        print(f"Subskrybujesz temat: {topic}")
-    else:
-        print(f"Błąd połączenia z brokerem MQTT. Kod: {rc}")
+class MQTTClient:
+    def __init__(self):
+        self.client = mqtt.Client("PC_Client")
+        self.client.username_pw_set(MQTT_USER, MQTT_PASSWORD)
+        self.client.on_connect = self.on_connect
+        self.client.on_message = self.on_message
 
-def on_message(client, userdata, msg):
-    print(f"Odebrano wiadomość z tematu {msg.topic}: {msg.payload.decode()}")
-    try:
-        payload = json.loads(msg.payload.decode())
-        print(f"Temperatura: {payload['temperature']}")
-        print(f"Pressure: {payload['pressure']}")
-        print(f"Humidity: {payload['humidity']}")
-        print(f"Air quality: {payload['air_quality']}")
-    except json.JSONDecodeError:
-        print("Niepoprawny format JSON")
+    def on_connect(self, client, userdata, flags, rc):
+        if rc == 0:
+            topic = f"/users/{USER_ID}/devices/{DEVICE_MAC}/data"
+            print(f"Connected to MQTT broker, subscribing to topic: {topic}")
+            client.subscribe(topic)
 
-client = mqtt.Client("PC_Client")
-client.username_pw_set(MQTT_USER, MQTT_PASSWORD)
+    def on_message(self, client, userdata, msg):
+        try:
+            payload = json.loads(msg.payload.decode())
+            mqtt_payload_received.send(sender=self.__class__, payload=payload)
+        except json.JSONDecodeError:
+            print("Invalid JSON format")
 
-client.on_connect = on_connect
-client.on_message = on_message
+    def run(self):
+        self.client.connect(BROKER_ADDRESS, BROKER_PORT)
+        self.client.loop_forever()
 
-print("Łączenie z brokerem MQTT...")
-client.connect(BROKER_ADDRESS, BROKER_PORT)
-
-print("Oczekiwanie na wiadomości...")
-client.loop_forever()
+if __name__ == "__main__":
+    client = MQTTClient()
+    client.run()
