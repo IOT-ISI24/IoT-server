@@ -42,6 +42,7 @@ class MeasurementView(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         esp = request.query_params.get('esp_id')
-        queryset = self.queryset.filter(esp=esp)
+        limit = request.query_params.get('limit')
+        queryset = reversed(self.queryset.filter(esp=esp).order_by('-date')[:int(limit)])
         serializer = self.get_serializer(queryset, many=True)
         return response.Response(serializer.data, status=status.HTTP_200_OK)
