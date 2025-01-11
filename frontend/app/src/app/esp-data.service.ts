@@ -26,6 +26,44 @@ export class EspDataService {
         }
         return throwError(() => ({
           type: 'GeneralError',
+          message: error.error.message || 'An unknown error occurred.',
+        }));
+      })
+    );
+  }
+
+  postEspData(espData: any, isAdding: boolean): Observable<any> {
+    return this.http.post(this.espDataUrl, {data: espData, is_adding: isAdding}, this.header).pipe(
+      catchError(error => {
+        const errorMessage = error.error?.message || 'An unknown error occurred.';
+        if (error.status === 401) {
+          return throwError(() => ({
+            type: 'Unauthorized',
+            message: errorMessage,
+          }));
+        }
+        return throwError(() => ({
+          type: 'GeneralError',
+          message: error.error.message || 'An unknown error occurred.',
+        }));
+      })
+    );
+  }
+
+  deleteEspData(espId: number): Observable<any> {
+    const params = { esp_id: espId.toString() };
+    const headers = this.authService.getAuthorizationHeader();
+  
+    return this.http.delete(this.espDataUrl, { ...headers, params }).pipe(
+      catchError(error => {
+        if (error.status === 401) {
+          return throwError(() => ({
+            type: 'Unauthorized',
+            message: 'You are not authorized to access this data.',
+          }));
+        }
+        return throwError(() => ({
+          type: 'GeneralError',
           message: error.message || 'An unknown error occurred.',
         }));
       })

@@ -1,54 +1,87 @@
 <div class="container mt-5">
-    <h2 class="text-center mb-4">Weather Stations</h2>
-  
-    <div *ngIf="isLoading" class="text-center">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-    </div>
-  
-    <div *ngIf="error" class="alert alert-danger text-center">
-      {{ error }}
-    </div>
-  
+  <h2 class="text-center mb-4">Weather Stations</h2>
+
+  <!-- Error Alert -->
+  <div *ngIf="error" class="alert alert-danger text-center">
+    {{ error }}
+  </div>
+
+  <!-- Add Station Button -->
+  <div class="d-flex justify-content-center mb-4">
+    <button class="btn btn-primary" (click)="addStation()" [disabled]="isLoading">Add Station</button>
+  </div>
+
+  <!-- Edit/Add Component -->
+  <div *ngIf="isEditing">
+    <app-edit-add
+      [station]="selectedStation"
+      (saveStation)="saveStation($event, selectedStation === null)"
+      (cancel)="cancelEdit()"
+    ></app-edit-add>
+  </div>
+
+  <!-- Station List -->
+  <div *ngIf="!isEditing">
     <div *ngIf="!isLoading && espData.length > 0">
-      <div class="row row-cols-1 g-4"> <!-- Ensures one card per row -->
+      <div class="row row-cols-1 g-4">
         <div class="col d-flex justify-content-center" *ngFor="let station of espData">
-          <div class="card shadow-sm" style="width: 30rem;"> <!-- Controls card size -->
+          <div class="card shadow-sm" style="width: 30rem;">
             <div class="card-body">
-              <h5 class="card-title">Weather Station: {{ station.name }}</h5>
-              <h6 class="card-subtitle mb-2 text-muted">MAC: {{ station.mac }}</h6>
+              <h5 class="card-title text-center">Weather Station: {{ station.name }}</h5>
+              <h6 class="card-subtitle mb-3 text-muted text-center">MAC: {{ station.mac }}</h6>
+
+              <!-- Station Details -->
               <p class="card-text">
                 <strong>Frequency:</strong> {{ station.frequency }} Hz<br>
-                <strong>Temperature Sensor:</strong> 
+                <strong>PM2.5 alarm threshold:</strong> {{ station.pm25_alarm_threshold }} µg/m³<br>
+                <strong>Temperature Sensor: </strong>
                 <span class="badge" [ngClass]="station.is_temp_enabled ? 'bg-success' : 'bg-danger'">
                   {{ station.is_temp_enabled ? 'Enabled' : 'Disabled' }}
                 </span><br>
-                <strong>Humidity Sensor:</strong> 
+                <strong>Humidity Sensor: </strong>
                 <span class="badge" [ngClass]="station.is_hum_enabled ? 'bg-success' : 'bg-danger'">
                   {{ station.is_hum_enabled ? 'Enabled' : 'Disabled' }}
                 </span><br>
-                <strong>Pressure Sensor:</strong> 
+                <strong>Pressure Sensor: </strong>
                 <span class="badge" [ngClass]="station.is_press_enabled ? 'bg-success' : 'bg-danger'">
                   {{ station.is_press_enabled ? 'Enabled' : 'Disabled' }}
                 </span><br>
-                <strong>PM2.5 Sensor:</strong> 
+                <strong>PM2.5 Sensor: </strong>
                 <span class="badge" [ngClass]="station.is_pm25_enabled ? 'bg-success' : 'bg-danger'">
                   {{ station.is_pm25_enabled ? 'Enabled' : 'Disabled' }}
                 </span><br>
-                <strong>Screen:</strong> 
+                <strong>Screen: </strong>
                 <span class="badge" [ngClass]="station.is_screen_enabled ? 'bg-success' : 'bg-danger'">
                   {{ station.is_screen_enabled ? 'Enabled' : 'Disabled' }}
                 </span>
               </p>
+
+              <!-- Buttons Section -->
+              <div class="d-flex justify-content-between mt-3">
+                <button
+                  class="btn btn-secondary"
+                  (click)="editStation(station)"
+                  [disabled]="isLoading"
+                >
+                  Edit
+                </button>
+                <button
+                  class="btn btn-danger"
+                  (click)="deleteStation(station)"
+                  [disabled]="isLoading"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  
+
+    <!-- No Weather Stations Available -->
     <div *ngIf="!isLoading && espData.length === 0" class="alert alert-warning text-center">
       No weather stations available.
     </div>
   </div>
-  
+</div>
