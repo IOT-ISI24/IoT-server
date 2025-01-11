@@ -48,6 +48,7 @@ export class ChartService {
             backgroundColor: 'rgba(75, 192, 192, 0.2)',
             borderWidth: 2,
             tension: 0.4,
+            pointRadius: 0,
           },
         ],
       },
