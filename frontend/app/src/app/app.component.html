@@ -2,8 +2,8 @@
     <div class="container-fluid">
       <a class="navbar-brand" routerLink="home" >Intelligent Weather Station</a>
       <div>
-        <button class="btn btn-outline-primary me-2" (click)="navigateToManage()">Manage Your Stations</button>
         @if (loginService.isLoggedIn()) {
+        <button class="btn btn-outline-primary me-2" (click)="navigateToManage()">Manage Your Stations</button>
         <button class="btn btn-outline-primary me-2" (click)="logout()">Logout</button>
         }
         @else{

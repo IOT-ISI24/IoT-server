@@ -70,7 +70,7 @@ export class EspDataService {
     );
   }
 
-  getMeasurements(espId: number, limit: number, periodic: boolean = true): Observable<any> {
+  getMeasurements(espId: number, limit: number, periodic: boolean = true): Observable<any> { 
     const params = { esp_id: espId.toString(), limit: limit.toString() };
     const headers = this.authService.getAuthorizationHeader();
   
@@ -91,7 +91,7 @@ export class EspDataService {
       );
   
     if (periodic) {
-      return interval(10000).pipe(
+      return interval(5000).pipe(
         startWith(0),
         switchMap(() => fetchData()),
         catchError(error => throwError(() => error))

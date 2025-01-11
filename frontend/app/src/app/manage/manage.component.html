@@ -32,7 +32,7 @@
 
               <!-- Station Details -->
               <p class="card-text">
-                <strong>Frequency:</strong> {{ station.frequency }} Hz<br>
+                <strong>Frequency:</strong> {{ station.frequency }} s<br>
                 <strong>PM2.5 alarm threshold:</strong> {{ station.pm25_alarm_threshold }} µg/m³<br>
                 <strong>Temperature Sensor: </strong>
                 <span class="badge" [ngClass]="station.is_temp_enabled ? 'bg-success' : 'bg-danger'">
