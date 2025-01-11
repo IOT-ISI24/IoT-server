@@ -32,7 +32,9 @@ export class LoginComponent {
       this.authService.login(username, password).subscribe({
         next: (token) => {
           localStorage.setItem('authToken', token);
-          this.router.navigate(['/home']);
+          this.router.navigate(['/home']).then(() => {
+            window.location.reload();
+          });
         },
         error: (err) => {
           this.errorMessage = 'Invalid username or password';
