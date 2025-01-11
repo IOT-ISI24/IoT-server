@@ -12,11 +12,6 @@ class ESPSerializer(serializers.ModelSerializer):
         model = ESP
         fields = '__all__'
 
-class ESPCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ESP
-        fields = ['name', 'mac', 'frequency', 'is_temp_enabled', 'is_hum_enabled', 'is_press_enabled', 'is_pm25_enabled', 'is_screen_enabled']
-
 class UserSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = User 

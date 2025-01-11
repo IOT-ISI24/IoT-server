@@ -34,6 +34,45 @@ class ESPView(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return response.Response(serializer.data, status=status.HTTP_200_OK)
     
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        is_adding = request.data["is_adding"]
+        data = request.data["data"]
+        data["owner"] = user.id
+        print(data)
+        if is_adding:
+            if ESP.objects.filter(mac=data["mac"]).exists():
+                if ESP.objects.get(mac=data["mac"]).owner == user:
+                    return response.Response({"message": "You already have station with this MAC registered."}, status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    ESP.objects.filter(mac=data["mac"]).delete()
+                    serializer = ESPSerializer(data=data)
+                    if serializer.is_valid():
+                        serializer.save()
+                        return response.Response(serializer.data, status=status.HTTP_201_CREATED)
+                    else:
+                        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                serializer = ESPSerializer(data=data)
+                if serializer.is_valid():
+                    serializer.save()
+                    return response.Response(serializer.data, status=status.HTTP_201_CREATED)
+                else:
+                    return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            esp = get_object_or_404(ESP, id=data["id"])
+            serializer = ESPSerializer(esp, data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return response.Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+    def delete(self, request, *args, **kwargs):
+        esp_id = request.query_params.get('esp_id')
+        ESP.objects.filter(id=esp_id).delete()
+        return response.Response(status=status.HTTP_204_NO_CONTENT)
+    
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 class MeasurementView(viewsets.ModelViewSet):
