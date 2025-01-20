@@ -11,8 +11,7 @@ MQTT_PASSWORD = "password"
 USER_ID = "1"
 DEVICE_MAC = "24:0A:C4:00:00:00"
 
-# Topic to publish data to
-topic = f"/users/{USER_ID}/devices/{DEVICE_MAC}/data"
+topic = f"/devices/{DEVICE_MAC}/data"
 
 def generate_sensor_data():
     """Generate random sensor data for testing."""

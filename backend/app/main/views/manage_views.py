@@ -15,6 +15,11 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from ..serializers import UserSerializer
+import paho.mqtt.publish as publish
+
+BROKER_ADDRESS = "localhost"
+BROKER_PORT = 1885
+
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -39,7 +44,13 @@ class ESPView(viewsets.ModelViewSet):
         is_adding = request.data["is_adding"]
         data = request.data["data"]
         data["owner"] = user.id
-        print(data)
+        frequency = data["frequency"]
+        publish.single(
+            topic=f"/frequency/{data['mac']}",
+            payload=frequency,
+            hostname=BROKER_ADDRESS,
+            port=BROKER_PORT,
+            )
         if is_adding:
             if ESP.objects.filter(mac=data["mac"]).exists():
                 if ESP.objects.get(mac=data["mac"]).owner == user:
