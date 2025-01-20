@@ -38,17 +38,6 @@
           formControlName="pm25_alarm_threshold"
         />
       </div>
-      <div class="form-check" *ngFor="let sensor of ['is_temp_enabled', 'is_hum_enabled', 'is_press_enabled', 'is_pm25_enabled', 'is_screen_enabled']">
-        <input
-          type="checkbox"
-          class="form-check-input"
-          [id]="sensor"
-          [formControlName]="sensor"
-        />
-        <label class="form-check-label" [for]="sensor">
-          {{ sensor.replace('is_', '').replace('_', ' ') | titlecase }}
-        </label>
-      </div>
       <button type="submit" class="btn btn-primary mt-3">Save</button>
       <button type="button" class="btn btn-secondary mt-3" (click)="onCancel()">
         Cancel

@@ -21,11 +21,11 @@ export class EditAddComponent {
       mac: ['', Validators.required],
       frequency: [0, [Validators.required, Validators.min(0)]],
       pm25_alarm_threshold: [0, [Validators.required, Validators.min(0)]],
-      is_temp_enabled: [false],
-      is_hum_enabled: [false],
-      is_press_enabled: [false],
-      is_pm25_enabled: [false],
-      is_screen_enabled: [false],
+      is_temp_enabled: [true],
+      is_hum_enabled: [true],
+      is_press_enabled: [true],
+      is_pm25_enabled: [true],
+      is_screen_enabled: [true],
     });
   }
 

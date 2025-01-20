@@ -34,26 +34,6 @@
               <p class="card-text">
                 <strong>Frequency:</strong> {{ station.frequency }} s<br>
                 <strong>PM2.5 alarm threshold:</strong> {{ station.pm25_alarm_threshold }} µg/m³<br>
-                <strong>Temperature Sensor: </strong>
-                <span class="badge" [ngClass]="station.is_temp_enabled ? 'bg-success' : 'bg-danger'">
-                  {{ station.is_temp_enabled ? 'Enabled' : 'Disabled' }}
-                </span><br>
-                <strong>Humidity Sensor: </strong>
-                <span class="badge" [ngClass]="station.is_hum_enabled ? 'bg-success' : 'bg-danger'">
-                  {{ station.is_hum_enabled ? 'Enabled' : 'Disabled' }}
-                </span><br>
-                <strong>Pressure Sensor: </strong>
-                <span class="badge" [ngClass]="station.is_press_enabled ? 'bg-success' : 'bg-danger'">
-                  {{ station.is_press_enabled ? 'Enabled' : 'Disabled' }}
-                </span><br>
-                <strong>PM2.5 Sensor: </strong>
-                <span class="badge" [ngClass]="station.is_pm25_enabled ? 'bg-success' : 'bg-danger'">
-                  {{ station.is_pm25_enabled ? 'Enabled' : 'Disabled' }}
-                </span><br>
-                <strong>Screen: </strong>
-                <span class="badge" [ngClass]="station.is_screen_enabled ? 'bg-success' : 'bg-danger'">
-                  {{ station.is_screen_enabled ? 'Enabled' : 'Disabled' }}
-                </span>
               </p>
 
               <!-- Buttons Section -->
