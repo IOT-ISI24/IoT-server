@@ -25,6 +25,12 @@ The "Intelligent Weather Station on ESP32" project is a comprehensive system for
 - Configuration of measurement parameters.
 - Notifications for exceeding predefined thresholds.
 
+## UI screenshots
+
+![Dashboard](dashboard.png)
+![Stations](stations.png)
+![add](add.png)
+
 ## Requirements
 
 ### ESP32
